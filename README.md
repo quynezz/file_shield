@@ -1,9 +1,8 @@
 <div align="center">
 
-<img src="https://img.shields.io/badge/FileShield-v2.0-00e5ff?style=for-the-badge&labelColor=020508" alt="FileShield">
+<img src="https://img.shields.io/badge/FileShield-v1.0-00e5ff?style=for-the-badge&labelColor=020508" alt="FileShield">
 
 # ⬡ FileShield
-
 
 ### Fast and accurate **magic-byte file type detection** & **security threat analysis** — no external dependencies
 
@@ -92,7 +91,6 @@ python3 fileshield.py <file>
 
 **Requirements:** Python 3.8 or later. No external packages.
 
-
 ---
 
 ## Installation
@@ -114,7 +112,6 @@ fileshield photo.jpg
 
 Want to use FileShield inside a Docker container?
 
-
 ```bash
 git clone https://github.com/yourname/fileshield.git
 cd fileshield
@@ -123,7 +120,6 @@ docker run -it --rm -v $(pwd):/data fileshield /data/suspicious.jpg
 ```
 
 ---
-
 
 ## Usage
 
@@ -157,7 +153,6 @@ python3 fileshield.py *.* --no-color | grep CRITICAL
 ```
 
 ### Recovery Mode
-
 
 ```bash
 # Analyze a corrupted file → list possible types with confidence %
@@ -225,13 +220,11 @@ Below is an example of FileShield scanning a PHP webshell disguised as a PNG ima
 ════════════════════════════════════════════════════════════════════════════════
 ```
 
-
 ---
 
 ## Threat Detection
 
 FileShield detects the following attack patterns:
-
 
 | Attack Technique | How FileShield Detects It | Risk Level |
 
@@ -250,7 +243,6 @@ FileShield detects the following attack patterns:
 
 ### Risk Score
 
-
 Every file is assigned a **risk score from 0 to 99** based on the weighted combination of detected threats:
 
 ```
@@ -262,7 +254,6 @@ Every file is assigned a **risk score from 0 to 99** based on the weighted combi
 70–99   ☠ CRITICAL  Immediate threat — do not process
 ```
 
-
 The exit code is `1` if any file scores ≥ 40, making it easy to integrate into CI/CD pipelines and upload handlers.
 
 ---
@@ -273,17 +264,15 @@ FileShield includes a recovery engine for corrupted files. It analyzes the remai
 
 ### How recovery scoring works
 
-
 The confidence score (0–100%) is computed from five independent signals:
 
-
-| Signal | Weight | Description |
-|---|---|---|
-| **Byte-level structural hints** | 40% | Format-specific binary patterns in the body (e.g. `xref`, `%%EOF`, `obj` in a PDF body) |
-| **String indicators** | 25% | Keywords specific to the format found in the file content |
-| **Shannon entropy** | 15% | Each format has a characteristic entropy range (text: 3.5–6, JPEG: 4.5–8, packed: >7.2) |
-| **Minimum file size** | 10% | Files smaller than the minimum valid size are penalized |
-| **Extension hint** | 10% | Bonus if the declared extension matches the predicted type |
+| Signal                          | Weight | Description                                                                             |
+| ------------------------------- | ------ | --------------------------------------------------------------------------------------- |
+| **Byte-level structural hints** | 40%    | Format-specific binary patterns in the body (e.g. `xref`, `%%EOF`, `obj` in a PDF body) |
+| **String indicators**           | 25%    | Keywords specific to the format found in the file content                               |
+| **Shannon entropy**             | 15%    | Each format has a characteristic entropy range (text: 3.5–6, JPEG: 4.5–8, packed: >7.2) |
+| **Minimum file size**           | 10%    | Files smaller than the minimum valid size are penalized                                 |
+| **Extension hint**              | 10%    | Bonus if the declared extension matches the predicted type                              |
 
 ### Example recovery session
 
@@ -331,30 +320,27 @@ $ python3 fileshield.py --recover broken.dat --as pdf --output fixed.pdf
 
 ### Supported recovery types
 
-
-| Key | Format | Extension | Patch Strategy |
-|---|---|---|---|
-| `jpg` | JPEG Image | `.jpg` | Patch SOI `FF D8` + JFIF APP0 header, append EOI |
-| `png` | PNG Image | `.png` | Patch 8-byte signature, append IEND chunk if missing |
-| `gif` | GIF Image | `.gif` | Patch `GIF89a` header, append trailer `0x3B` |
-| `bmp` | BMP Bitmap | `.bmp` | Patch `BM` signature, rebuild file size field |
-| `pdf` | PDF Document | `.pdf` | Patch `%PDF-1.x`, detect version from body, append `%%EOF` |
-| `zip` | ZIP Archive | `.zip` | Patch `PK 03 04` Local File Header |
-| `gz` | GZIP | `.gz` | Patch `1F 8B` + CM byte |
-| `mp3` | MP3 Audio | `.mp3` | Find ID3 tag or MPEG sync word, strip garbage prefix |
-| `wav` | WAV Audio | `.wav` | Patch `RIFF` + rebuild chunk size + `WAVE` marker |
-| `mp4` | MP4 Video | `.mp4` | Prepend/fix `ftyp` box |
-| `xml` | XML Document | `.xml` | Prepend `<?xml>` declaration |
-| `html` | HTML Document | `.html` | Prepend DOCTYPE, append `</html>` |
-| `sqlite` | SQLite Database | `.db` | Patch 16-byte `SQLite format 3\x00` header |
+| Key      | Format          | Extension | Patch Strategy                                             |
+| -------- | --------------- | --------- | ---------------------------------------------------------- |
+| `jpg`    | JPEG Image      | `.jpg`    | Patch SOI `FF D8` + JFIF APP0 header, append EOI           |
+| `png`    | PNG Image       | `.png`    | Patch 8-byte signature, append IEND chunk if missing       |
+| `gif`    | GIF Image       | `.gif`    | Patch `GIF89a` header, append trailer `0x3B`               |
+| `bmp`    | BMP Bitmap      | `.bmp`    | Patch `BM` signature, rebuild file size field              |
+| `pdf`    | PDF Document    | `.pdf`    | Patch `%PDF-1.x`, detect version from body, append `%%EOF` |
+| `zip`    | ZIP Archive     | `.zip`    | Patch `PK 03 04` Local File Header                         |
+| `gz`     | GZIP            | `.gz`     | Patch `1F 8B` + CM byte                                    |
+| `mp3`    | MP3 Audio       | `.mp3`    | Find ID3 tag or MPEG sync word, strip garbage prefix       |
+| `wav`    | WAV Audio       | `.wav`    | Patch `RIFF` + rebuild chunk size + `WAVE` marker          |
+| `mp4`    | MP4 Video       | `.mp4`    | Prepend/fix `ftyp` box                                     |
+| `xml`    | XML Document    | `.xml`    | Prepend `<?xml>` declaration                               |
+| `html`   | HTML Document   | `.html`   | Prepend DOCTYPE, append `</html>`                          |
+| `sqlite` | SQLite Database | `.db`     | Patch 16-byte `SQLite format 3\x00` header                 |
 
 > **Note:** Header patching restores the magic bytes and minimal structure. If the file body is also corrupted, additional specialized tools (PhotoRec, TestDisk, `sqlite3 .recover`) may be needed.
-
 
 ---
 
 ## How It Works
-
 
 ### Magic byte detection
 
@@ -412,11 +398,9 @@ PHP Polyglot (GIFAR technique):
 
 ---
 
-
 ## Integration
 
 ### Python
-
 
 ```python
 import subprocess
@@ -468,7 +452,6 @@ def validate_upload(file_obj):
 ### CI/CD pipeline (GitHub Actions)
 
 ```yaml
-
 - name: Scan uploaded artifacts
   run: |
     python3 fileshield.py -d ./artifacts/ --dangerous-only --no-color
@@ -477,7 +460,6 @@ def validate_upload(file_obj):
       exit 1
     fi
 ```
-
 
 ### Shell script
 
@@ -494,7 +476,6 @@ fi
 ---
 
 ## Security Recommendations
-
 
 FileShield will flag threats and explain them. Here is the broader guidance for building a secure file upload system:
 
@@ -518,15 +499,14 @@ FileShield will flag threats and explain them. Here is the broader guidance for 
 
 ## Supported Formats
 
-
 FileShield detects the following file formats via magic byte analysis:
 
-| Category | Formats |
-|---|---|
+| Category        | Formats                                                                    |
+| --------------- | -------------------------------------------------------------------------- |
 | **Executables** | Windows PE (MZ), ELF (Linux/Android), Mach-O (macOS 32/64-bit), Java Class |
-| **Scripts** | PHP, Shebang scripts (sh/py/rb/pl), Windows LNK |
-| **Documents** | PDF, Microsoft Office OLE2 (doc/xls/ppt), OOXML/ZIP (docx/xlsx/pptx), RTF |
-| **Archives** | ZIP, RAR, 7-Zip, GZIP |
+| **Scripts**     | PHP, Shebang scripts (sh/py/rb/pl), Windows LNK                            |
+| **Documents**   | PDF, Microsoft Office OLE2 (doc/xls/ppt), OOXML/ZIP (docx/xlsx/pptx), RTF  |
+| **Archives**    | ZIP, RAR, 7-Zip, GZIP                                                      |
 
 | **Images** | JPEG, PNG, GIF, BMP, WebP/RIFF |
 | **Media** | MP3, WAV, RIFF container (AVI) |
@@ -534,7 +514,6 @@ FileShield detects the following file formats via magic byte analysis:
 
 | **Data** | SQLite, PCAP, PCAPNG |
 | **Dangerous/Legacy** | Adobe Flash SWF (compressed & uncompressed) |
-
 
 ---
 
@@ -580,9 +559,7 @@ options:
 
 ---
 
-
 ## JSON Output Format
-
 
 When using `--export`, FileShield writes a JSON array where each entry follows this schema:
 
@@ -624,24 +601,22 @@ When using `--export`, FileShield writes a JSON array where each entry follows t
         "name": "PHP POLYGLOT / WEBSHELL DETECTED",
         "detail": "PHP code (<?php or <?=) found inside a binary/image file..."
       }
-
     ],
     "timestamp": "2026-02-24T10:30:00Z"
   }
 ]
 ```
 
-
 ---
 
 ## Comparison
 
-| Feature | `file` (Unix) | `python-magic` | **FileShield** |
-|---|---|---|---|
-| Magic byte detection | ✓ | ✓ | ✓ |
-| Extension mismatch detection | ✗ | ✗ | ✓ |
-| PHP polyglot detection | ✗ | ✗ | ✓ |
-| Hidden PE detection | ✗ | ✗ | ✓ |
+| Feature                      | `file` (Unix) | `python-magic` | **FileShield** |
+| ---------------------------- | ------------- | -------------- | -------------- |
+| Magic byte detection         | ✓             | ✓              | ✓              |
+| Extension mismatch detection | ✗             | ✗              | ✓              |
+| PHP polyglot detection       | ✗             | ✗              | ✓              |
+| Hidden PE detection          | ✗             | ✗              | ✓              |
 
 | Null byte injection detection | ✗ | ✗ | ✓ |
 | Entropy analysis | ✗ | ✗ | ✓ |
@@ -653,7 +628,6 @@ When using `--export`, FileShield writes a JSON array where each entry follows t
 | Zero dependencies | ✓ | ✗ | ✓ |
 | JSON export | ✗ | ✗ | ✓ |
 | CI/CD integration (exit codes) | ✗ | ✗ | ✓ |
-
 
 ---
 
@@ -710,10 +684,8 @@ of this software [...] to deal in the Software without restriction.
 
 <div align="center">
 
-
 Made for security engineers, developers, and anyone who uploads files to a server.
 
 **[⬆ Back to top](#-fileshield)**
-
 
 </div>

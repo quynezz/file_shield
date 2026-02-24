@@ -524,11 +524,10 @@ RISK_COLOR = {
 
 RISK_ICON = {
     'CRITICAL': '☠',
-    'HIGH':     '⚠',
+    'HIGH':     '⚠ ',
     'MEDIUM':   '!',
     'LOW':      '✓',
-
-    'INFO':     'ℹ',
+    'INFO':     'ℹ ',
 }
 
 
@@ -1241,13 +1240,11 @@ RECOVERY_PROFILES = {
     "mp3": {
         "label": "MP3 Audio",
         "ext": "mp3",
-
         "category": "media",
         "magic": bytes([0xFF, 0xFB]),
         "magic_len": 2,
         "footer": None,
         "min_size": 128,
-
         "indicators": ["id3", "mp3", "mpeg", "audio", "lame", "vbr", "cbr", "tag"],
         "byte_hints": lambda raw: (
             raw[:3] == b'ID3' or          # ID3v2 tag
@@ -1318,7 +1315,6 @@ RECOVERY_PROFILES = {
             b'<?xml' in raw[:64] or
             b'xmlns' in raw[:512] or
             b'</' in raw
-
         ),
         "entropy_range": (3.5, 6.0),
         "strategy": "Patch XML declaration header (<?xml version=\"1.0\"?>). Body là text nên thường còn readable. Verify well-formedness bằng XML parser sau khi patch.",
@@ -1350,7 +1346,6 @@ RECOVERY_PROFILES = {
     "sqlite": {
         "label": "SQLite Database",
         "ext": "db",
-
         "category": "data",
         "magic": b"SQLite format 3\x00",
         "magic_len": 16,
